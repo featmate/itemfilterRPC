@@ -1,0 +1,165 @@
+syntax = "proto3";
+package itemfilterRPC;
+import "pbschema/protoc-gen-openapiv2/options/annotations.proto";
+import "pbschema/itemfilterRPC/universal.proto";
+// import "google/api/httpbody.proto";
+option go_package = "./itemfilterRPC_pb";
+// Meta
+enum MetaDataStoreType {
+    SELF = 0;
+    REDIS = 1;
+    ETCD = 2;
+}
+  
+message MetaMetaDataStoreConfig{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "MetaMetaDataStoreConfig"
+            description: "服务meta信息中的数据元信息存放设置"
+            required: ["StoreType"]
+        }
+    };
+    MetaDataStoreType StoreType = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "存储信息保存类型,可选为`Self(0),REDIS(1)和Etcd(2)`,默认`Self`"
+    }];
+    string StoreURL = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "存储信息保存工具的url,self类型则不展示"
+    }];
+}
+
+message MetaBlacklistConfig{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "MetaBlacklistConfig"
+            description: "服务meta信息中的黑名单部分的设置"
+            required: ["RangeInfoKey","InfoKeyNamespace","IDGener"]
+        }
+    };
+
+    string RangeInfoKey = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "黑名单范围信息保存的key,这个key不会设置过期,如果要删除请手动删除"
+    }];
+    string InfoKeyNamespace = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "黑名单信息数据的命名空间"
+    }];
+    int32 InfoDefaultTTLDays =3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "黑名单信息数据默认保留的天数,0为永续保存"
+    }];
+    string IDGener = 4[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "黑名单创建时默认的id生成器"
+    }];
+}
+
+message MetaRangeConfig{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "MetaRangeConfig"
+            description: "服务meta信息中的范围部分的配置信息"
+            required: ["RangeInfoKey","InfoKeyNamespace","IDGener"]
+        }
+    };
+    string RangeInfoKey = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "范围的范围信息保存的key,这个key不会设置过期,如果要删除请手动删除"
+    }];
+    string InfoKeyNamespace = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "范围信息数据的命名空间"
+    }];
+    int32 InfoDefaultTTLDays =3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "范围信息数据保留的天数,,0为永续保存"
+    }];
+    string IDGener = 4[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "范围创建时默认的id生成器"
+    }];
+}
+
+message MetaContextConfig{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "MetaContextConfig"
+            description: "服务meta信息中的Context部分设置"
+            required: ["KeyTemplate","DefaultSetting"]
+        }
+    };
+    string KeyTemplate = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "上下文过滤器的完整命名模板"
+    }];
+    RedisFilterSetting DefaultSetting = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "上下文默认使用的过滤器设置"
+    }];
+}
+
+message MetaPickerConfig{
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+          title: "MetaPickerConfig"
+          description: "服务meta信息中的Picker部分设置"
+          required: ["KeyTemplate","FilterInfos"]
+      }
+  };
+
+  string KeyTemplate = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Picker行为记录的key模板"
+  }];
+  map<string,RedisFilterSetting>  FilterInfos = 3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "设置的时间间隔中使用的过滤器配置"
+  }];
+}
+
+message MetaPickerCounterConfig{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "MetaPickerCounterConfig"
+            description: "服务meta信息中的PickerCounter部分设置"
+            required: ["PickerCounterTTLDays"]
+        }
+    };
+    int32 TTLDays =1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "计数picker保留的天数"
+    }];
+    string PickerCounterKeyTemplate = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "计数picker的key的模板"
+    }];
+    bool RangeCounterOn =3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "范围是否统计PickerCounter"
+    }];
+    int32 RangeTTLDays =4[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "范围统计PickerCounter保留的天数"
+    }];
+    string RangePickerCounterKeyTemplate = 5[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "范围计数picker的key的模板"
+    }];
+}
+
+message MetaInfo{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "MetaInfo"
+            description: "服务meta信息"
+            required: ["ContextDefaultTTLSeconds"]
+        }
+    };
+    string RedisURL = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "服务使用的redis"
+    }];
+    MetaMetaDataStoreConfig MetaDataStoreConfig = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "服务的数据保存元数据存储配置"
+    }];
+    MetaBlacklistConfig BlacklistConfig = 3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "服务的黑名单设置"
+    }];
+    MetaRangeConfig RangeConfig = 4[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "服务的范围设置"
+    }];
+    MetaContextConfig ContextConfig =5[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "服务的上下文设置"
+    }];
+    MetaPickerConfig PickerConfig = 6[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "服务的Picker设置"
+    }];
+    bool PickerCounterOn =7[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "是否启用PickerCounter特性"
+    }];
+    MetaPickerCounterConfig PickerCounterConfig =8[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "服务的PickerCounter设置"
+    }];
+}

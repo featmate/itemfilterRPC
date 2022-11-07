@@ -1,0 +1,1740 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "itemfilterRPC",
+    "version": "0.0.0",
+    "contact": {
+      "name": "test",
+      "url": "http://localhost:5000",
+      "email": "hsz1273327@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "ITEMFILTERRPC"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json",
+    "application/x-foo-mime"
+  ],
+  "produces": [
+    "application/json",
+    "application/x-foo-mime"
+  ],
+  "paths": {
+    "/api/batchop/range": {
+      "post": {
+        "summary": "批量向指定范围添加元素",
+        "description": "流中的第一个元素需要指定rangeid,添加的元素只会放入这个rangeid对应的key中.",
+        "operationId": "batchAddRange",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCAddRangeSourceQuery"
+            }
+          }
+        ],
+        "tags": [
+          "range"
+        ]
+      }
+    },
+    "/api/batchop/setter": {
+      "post": {
+        "summary": "批量设置资源在指定条件中已被使用",
+        "operationId": "batchSetEntitySourceUsed",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCSetSourceUsedQuery"
+            }
+          }
+        ],
+        "tags": [
+          "operation",
+          "set"
+        ]
+      }
+    },
+    "/api/blacklist": {
+      "post": {
+        "summary": "创建黑名单",
+        "operationId": "newBlacklistList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCNewFilterQuery"
+            }
+          }
+        ],
+        "tags": [
+          "blacklist"
+        ]
+      }
+    },
+    "/api/blacklist/{id}": {
+      "get": {
+        "summary": "获取指定黑名单信息",
+        "operationId": "getBlacklist",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCBlacklistInfoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "blacklist"
+        ]
+      },
+      "delete": {
+        "summary": "删除指定黑名单信息",
+        "operationId": "deleteBlacklistList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "blacklist"
+        ]
+      },
+      "put": {
+        "summary": "更新指定黑名单内容",
+        "description": "本接口更新为替换操作",
+        "operationId": "updateBlacklistList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "黑名单的新内容,替换原本的内容"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "blacklist"
+        ]
+      }
+    },
+    "/api/blacklists": {
+      "get": {
+        "summary": "获取黑名单id列表",
+        "operationId": "getBlacklistList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "blacklist"
+        ]
+      }
+    },
+    "/api/check": {
+      "post": {
+        "summary": "检查实体资源是否可用",
+        "operationId": "checkEntitySource",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCCandidateStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCCheckQuery"
+            }
+          }
+        ],
+        "tags": [
+          "operation",
+          "check"
+        ]
+      }
+    },
+    "/api/check/blacklist/{id}": {
+      "post": {
+        "summary": "检查候选者是否在指定黑名单内",
+        "operationId": "checkBlacklistList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCCandidateStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "请求的范围或黑名单名",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "candidates": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "待检查的候选项"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "blacklist",
+          "check"
+        ]
+      }
+    },
+    "/api/check/range/{id}": {
+      "post": {
+        "summary": "检查候选者在不在指定范围内",
+        "operationId": "checkRange",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCCandidateStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "请求的范围或黑名单名",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "candidates": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "待检查的候选项"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "range",
+          "check"
+        ]
+      }
+    },
+    "/api/context": {
+      "post": {
+        "summary": "创建上下文过滤器",
+        "operationId": "newContext",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCNewFilterQuery"
+            }
+          }
+        ],
+        "tags": [
+          "context"
+        ]
+      }
+    },
+    "/api/context/{id}/entity_source_type/{entitySourceType}": {
+      "get": {
+        "summary": "获取上下文过滤器状态",
+        "operationId": "getContextStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCGetContextStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "entitySourceType",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "context"
+        ]
+      }
+    },
+    "/api/filter": {
+      "post": {
+        "summary": "过滤掉不符合条件的候选实体资源",
+        "operationId": "filterEntitySource",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCSurvivorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCFilterQuery"
+            }
+          }
+        ],
+        "tags": [
+          "operation",
+          "filter"
+        ]
+      }
+    },
+    "/api/filter/in_range/{id}": {
+      "post": {
+        "summary": "过滤掉不在指定范围内的候选元素",
+        "operationId": "filterRange",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCSurvivorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "请求的范围或黑名单名",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "need": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "需要挑出符合要求的候选者的个数,如果为0则表示找出全部,否则按候选者的顺序查找"
+                },
+                "chunkSize": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "单批查找个数"
+                },
+                "candidates": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "待检查的候选项"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "range",
+          "filter"
+        ]
+      }
+    },
+    "/api/filter/not_in_blacklist/{id}": {
+      "post": {
+        "summary": "候选者中过滤掉在指定黑名单内的元素",
+        "operationId": "filterBlacklistList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCSurvivorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "请求的范围或黑名单名",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "need": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "需要挑出符合要求的候选者的个数,如果为0则表示找出全部,否则按候选者的顺序查找"
+                },
+                "chunkSize": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "单批查找个数"
+                },
+                "candidates": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "待检查的候选项"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "blacklist",
+          "filter"
+        ]
+      }
+    },
+    "/api/meta": {
+      "get": {
+        "summary": "获取本服务的元信息",
+        "operationId": "getMeta",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCMetaResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/api/picker": {
+      "post": {
+        "summary": "创建挑选者过滤器组",
+        "operationId": "newPicker",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCNewPickerFilterQuery"
+            }
+          }
+        ],
+        "tags": [
+          "picker"
+        ]
+      }
+    },
+    "/api/picker/{id}/entity_source_type/{entitySourceType}": {
+      "get": {
+        "summary": "获取挑选者过滤器组状态",
+        "operationId": "getPickerStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCGetPickerStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "entitySourceType",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "picker"
+        ]
+      }
+    },
+    "/api/pickercounter": {
+      "get": {
+        "summary": "获取指定条件下PickerCounter的计数值",
+        "description": "需要启动相关功能",
+        "operationId": "getPickerCounterNumber",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCGetPickerCounterNumberResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "days",
+            "description": "指定向后查看的天数,0或空表示查看当天",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "offset",
+            "description": "指定向后偏移的天数,0或空表示无偏移",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "mod",
+            "description": "求集合的模式",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "UnionByDayAndRange",
+              "UnionByRange",
+              "UnionByDay"
+            ],
+            "default": "UnionByDayAndRange"
+          },
+          {
+            "name": "ranges",
+            "description": "指定若干个range,不指定则获取总体",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "pickercounter"
+        ]
+      }
+    },
+    "/api/range": {
+      "post": {
+        "summary": "创建范围",
+        "operationId": "newRangeList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCNewFilterQuery"
+            }
+          }
+        ],
+        "tags": [
+          "range"
+        ]
+      }
+    },
+    "/api/range/{id}": {
+      "get": {
+        "summary": "获取指定范围信息",
+        "operationId": "getRange",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCRangeInfoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "range"
+        ]
+      },
+      "delete": {
+        "summary": "删除指定范围",
+        "operationId": "deleteRange",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "range"
+        ]
+      },
+      "put": {
+        "summary": "向指定范围添加元素",
+        "operationId": "addRange",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "范围的新内容,如果内容很多建议使用批处理接口"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "range"
+        ]
+      }
+    },
+    "/api/ranges": {
+      "get": {
+        "summary": "获取范围id列表",
+        "operationId": "getRangeList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "range"
+        ]
+      }
+    },
+    "/api/setter": {
+      "post": {
+        "summary": "设置资源在指定条件中已被使用",
+        "operationId": "setEntitySourceUsed",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/itemfilterRPCSetSourceUsedQuery"
+            }
+          }
+        ],
+        "tags": [
+          "operation",
+          "set"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "itemfilterRPCAddRangeSourceQuery": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "范围的新内容,如果内容很多建议使用批处理接口"
+        }
+      }
+    },
+    "itemfilterRPCBlacklistInfo": {
+      "type": "object",
+      "properties": {
+        "Meta": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterMeta",
+          "description": "黑名单的元信息"
+        },
+        "FilterType": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterType",
+          "description": "过滤器类型"
+        },
+        "Status": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterStatus",
+          "description": "过滤器当前状态"
+        },
+        "Setting": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterSetting",
+          "description": "过滤器设置"
+        }
+      },
+      "description": "黑名单信息",
+      "title": "BlacklistInfo",
+      "required": [
+        "Meta",
+        "FilterType",
+        "Status"
+      ]
+    },
+    "itemfilterRPCBlacklistInfoResponse": {
+      "type": "object",
+      "properties": {
+        "info": {
+          "$ref": "#/definitions/itemfilterRPCBlacklistInfo",
+          "description": "黑名单信息"
+        }
+      },
+      "description": "黑名单信息的响应",
+      "title": "BlackListInfoResponse"
+    },
+    "itemfilterRPCBloomFilterSetting": {
+      "type": "object",
+      "properties": {
+        "Capacity": {
+          "type": "string",
+          "format": "int64",
+          "description": "最大容量"
+        },
+        "ErrorRate": {
+          "type": "number",
+          "format": "double",
+          "description": "碰撞率,碰撞率设置的越低使用的hash函数越多,使用的空间也越大,检索效率也越低"
+        },
+        "Expansion": {
+          "type": "string",
+          "format": "int64",
+          "description": "扩容倍数"
+        },
+        "NonScaling": {
+          "type": "boolean",
+          "description": "是否可以扩容过滤器"
+        },
+        "MaxTTLSeconds": {
+          "type": "string",
+          "format": "int64",
+          "description": "保存key的最大过期秒数"
+        }
+      }
+    },
+    "itemfilterRPCCandidateStatusResponse": {
+      "type": "object",
+      "properties": {
+        "entitySourceType": {
+          "type": "string",
+          "description": "实体资源类型"
+        },
+        "candidateStatus": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "description": "过滤器中是否存在候选者的信息,true表示在,false表示不在"
+        }
+      },
+      "description": "只包含候选者状态信息的响应",
+      "title": "CandidateStatusResponse"
+    },
+    "itemfilterRPCCheckQuery": {
+      "type": "object",
+      "properties": {
+        "conditions": {
+          "$ref": "#/definitions/itemfilterRPCCondition",
+          "description": "待检查的条件"
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "待检查的候选项"
+        }
+      }
+    },
+    "itemfilterRPCCondition": {
+      "type": "object",
+      "properties": {
+        "pickerId": {
+          "type": "string",
+          "description": "挑选者id"
+        },
+        "entitySourceType": {
+          "type": "string",
+          "description": "检查的实体类型"
+        },
+        "rangeId": {
+          "type": "string",
+          "description": "范围id"
+        },
+        "contextIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "上下文id"
+        },
+        "blacklistIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "黑名单id列表"
+        }
+      }
+    },
+    "itemfilterRPCCuckooFilterSetting": {
+      "type": "object",
+      "properties": {
+        "Capacity": {
+          "type": "string",
+          "format": "int64",
+          "description": "最大容量"
+        },
+        "Expansion": {
+          "type": "string",
+          "format": "int64",
+          "description": "扩容倍数"
+        },
+        "NonScaling": {
+          "type": "boolean",
+          "description": "是否可以扩容过滤器"
+        },
+        "BucketSize": {
+          "type": "string",
+          "format": "int64",
+          "description": "只对CUCKOO有效,桶大小,每个存储桶中的项目数.较高的桶大小值会提高填充率,但也会导致更高的错误率和稍慢的性能"
+        },
+        "MaxIterations": {
+          "type": "string",
+          "format": "int64",
+          "description": "只对CUCKOO有效,在声明过滤器已满并创建附加过滤器之前尝试在存储桶之间交换项目的次数.较低的值对性能更好,较高的值对过滤器填充率更好"
+        },
+        "MaxTTLSeconds": {
+          "type": "string",
+          "format": "int64",
+          "description": "保存key的最大过期秒数"
+        }
+      }
+    },
+    "itemfilterRPCFilterQuery": {
+      "type": "object",
+      "properties": {
+        "conditions": {
+          "$ref": "#/definitions/itemfilterRPCCondition",
+          "description": "待过滤的条件"
+        },
+        "need": {
+          "type": "integer",
+          "format": "int32",
+          "description": "需要挑出符合要求的候选者的个数,如果为0则表示找出全部,否则按候选者的顺序查找"
+        },
+        "chunkSize": {
+          "type": "integer",
+          "format": "int32",
+          "description": "单批查找个数"
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "待过滤的候选项"
+        }
+      }
+    },
+    "itemfilterRPCGetContextStatusResponse": {
+      "type": "object",
+      "properties": {
+        "filterStatus": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterStatus",
+          "description": "上下文过滤器状态"
+        }
+      },
+      "description": "获取上下文状态信息的响应",
+      "title": "GetContextStatusResponse"
+    },
+    "itemfilterRPCGetPickerCounterNumberResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "format": "int64"
+          },
+          "description": "结果"
+        }
+      },
+      "description": "获取挑选者数量的响应",
+      "title": "GetPickerCounterNumberResponse"
+    },
+    "itemfilterRPCGetPickerStatusResponse": {
+      "type": "object",
+      "properties": {
+        "filterStatus": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/itemfilterRPCRedisFilterStatus"
+          },
+          "description": "支持的时间段对应过滤器状态"
+        }
+      },
+      "description": "获取用户状态信息的响应",
+      "title": "GetPickerStatusResponse"
+    },
+    "itemfilterRPCIDResponse": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string",
+          "description": "id号"
+        }
+      },
+      "description": "只含ID信息的响应",
+      "title": "StatusResponse",
+      "required": [
+        "ID"
+      ]
+    },
+    "itemfilterRPCListResponse": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "id列表"
+        }
+      },
+      "description": "列表的响应",
+      "title": "ListResponse"
+    },
+    "itemfilterRPCMetaBlacklistConfig": {
+      "type": "object",
+      "properties": {
+        "RangeInfoKey": {
+          "type": "string",
+          "description": "黑名单范围信息保存的key,这个key不会设置过期,如果要删除请手动删除"
+        },
+        "InfoKeyNamespace": {
+          "type": "string",
+          "description": "黑名单信息数据的命名空间"
+        },
+        "InfoDefaultTTLDays": {
+          "type": "integer",
+          "format": "int32",
+          "description": "黑名单信息数据默认保留的天数,0为永续保存"
+        },
+        "IDGener": {
+          "type": "string",
+          "description": "黑名单创建时默认的id生成器"
+        }
+      },
+      "description": "服务meta信息中的黑名单部分的设置",
+      "title": "MetaBlacklistConfig",
+      "required": [
+        "RangeInfoKey",
+        "InfoKeyNamespace",
+        "IDGener"
+      ]
+    },
+    "itemfilterRPCMetaContextConfig": {
+      "type": "object",
+      "properties": {
+        "KeyTemplate": {
+          "type": "string",
+          "description": "上下文过滤器的完整命名模板"
+        },
+        "DefaultSetting": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterSetting",
+          "description": "上下文默认使用的过滤器设置"
+        }
+      },
+      "description": "服务meta信息中的Context部分设置",
+      "title": "MetaContextConfig",
+      "required": [
+        "KeyTemplate",
+        "DefaultSetting"
+      ]
+    },
+    "itemfilterRPCMetaDataStoreType": {
+      "type": "string",
+      "enum": [
+        "SELF",
+        "REDIS",
+        "ETCD"
+      ],
+      "default": "SELF",
+      "title": "Meta"
+    },
+    "itemfilterRPCMetaInfo": {
+      "type": "object",
+      "properties": {
+        "RedisURL": {
+          "type": "string",
+          "description": "服务使用的redis"
+        },
+        "MetaDataStoreConfig": {
+          "$ref": "#/definitions/itemfilterRPCMetaMetaDataStoreConfig",
+          "description": "服务的数据保存元数据存储配置"
+        },
+        "BlacklistConfig": {
+          "$ref": "#/definitions/itemfilterRPCMetaBlacklistConfig",
+          "description": "服务的黑名单设置"
+        },
+        "RangeConfig": {
+          "$ref": "#/definitions/itemfilterRPCMetaRangeConfig",
+          "description": "服务的范围设置"
+        },
+        "ContextConfig": {
+          "$ref": "#/definitions/itemfilterRPCMetaContextConfig",
+          "description": "服务的上下文设置"
+        },
+        "PickerConfig": {
+          "$ref": "#/definitions/itemfilterRPCMetaPickerConfig",
+          "description": "服务的Picker设置"
+        },
+        "PickerCounterOn": {
+          "type": "boolean",
+          "description": "是否启用PickerCounter特性"
+        },
+        "PickerCounterConfig": {
+          "$ref": "#/definitions/itemfilterRPCMetaPickerCounterConfig",
+          "description": "服务的PickerCounter设置"
+        }
+      },
+      "description": "服务meta信息",
+      "title": "MetaInfo",
+      "required": [
+        "ContextDefaultTTLSeconds"
+      ]
+    },
+    "itemfilterRPCMetaMetaDataStoreConfig": {
+      "type": "object",
+      "properties": {
+        "StoreType": {
+          "$ref": "#/definitions/itemfilterRPCMetaDataStoreType",
+          "description": "存储信息保存类型,可选为`Self(0),REDIS(1)和Etcd(2)`,默认`Self`"
+        },
+        "StoreURL": {
+          "type": "string",
+          "description": "存储信息保存工具的url,self类型则不展示"
+        }
+      },
+      "description": "服务meta信息中的数据元信息存放设置",
+      "title": "MetaMetaDataStoreConfig",
+      "required": [
+        "StoreType"
+      ]
+    },
+    "itemfilterRPCMetaPickerConfig": {
+      "type": "object",
+      "properties": {
+        "KeyTemplate": {
+          "type": "string",
+          "description": "Picker行为记录的key模板"
+        },
+        "FilterInfos": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/itemfilterRPCRedisFilterSetting"
+          },
+          "description": "设置的时间间隔中使用的过滤器配置"
+        }
+      },
+      "description": "服务meta信息中的Picker部分设置",
+      "title": "MetaPickerConfig",
+      "required": [
+        "KeyTemplate",
+        "FilterInfos"
+      ]
+    },
+    "itemfilterRPCMetaPickerCounterConfig": {
+      "type": "object",
+      "properties": {
+        "TTLDays": {
+          "type": "integer",
+          "format": "int32",
+          "description": "计数picker保留的天数"
+        },
+        "PickerCounterKeyTemplate": {
+          "type": "string",
+          "description": "计数picker的key的模板"
+        },
+        "RangeCounterOn": {
+          "type": "boolean",
+          "description": "范围是否统计PickerCounter"
+        },
+        "RangeTTLDays": {
+          "type": "integer",
+          "format": "int32",
+          "description": "范围统计PickerCounter保留的天数"
+        },
+        "RangePickerCounterKeyTemplate": {
+          "type": "string",
+          "description": "范围计数picker的key的模板"
+        }
+      },
+      "description": "服务meta信息中的PickerCounter部分设置",
+      "title": "MetaPickerCounterConfig",
+      "required": [
+        "PickerCounterTTLDays"
+      ]
+    },
+    "itemfilterRPCMetaRangeConfig": {
+      "type": "object",
+      "properties": {
+        "RangeInfoKey": {
+          "type": "string",
+          "description": "范围的范围信息保存的key,这个key不会设置过期,如果要删除请手动删除"
+        },
+        "InfoKeyNamespace": {
+          "type": "string",
+          "description": "范围信息数据的命名空间"
+        },
+        "InfoDefaultTTLDays": {
+          "type": "integer",
+          "format": "int32",
+          "description": "范围信息数据保留的天数,,0为永续保存"
+        },
+        "IDGener": {
+          "type": "string",
+          "description": "范围创建时默认的id生成器"
+        }
+      },
+      "description": "服务meta信息中的范围部分的配置信息",
+      "title": "MetaRangeConfig",
+      "required": [
+        "RangeInfoKey",
+        "InfoKeyNamespace",
+        "IDGener"
+      ]
+    },
+    "itemfilterRPCMetaResponse": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/definitions/itemfilterRPCMetaInfo",
+          "description": "元信息"
+        }
+      },
+      "description": "服务meta信息的响应",
+      "title": "MetaResponse"
+    },
+    "itemfilterRPCNewFilterQuery": {
+      "type": "object",
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterMeta",
+          "description": "指定过滤器的元信息"
+        },
+        "setting": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterSetting",
+          "description": "指定过滤器的设置"
+        },
+        "entitySources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "指定向过滤器中设置的实体ID,注意作为创建blacklist的参数时以及其他以set作为filter的过滤器时都必填"
+        }
+      }
+    },
+    "itemfilterRPCNewPickerFilterQuery": {
+      "type": "object",
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterMeta",
+          "description": "指定过滤器的元信息"
+        },
+        "settings": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/itemfilterRPCRedisFilterSetting"
+          },
+          "description": "指定过滤器的设置,key为对应的时长,如果未指定则使用默认"
+        },
+        "entitySources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "指定向过滤器中设置的实体ID"
+        }
+      },
+      "title": "Picker"
+    },
+    "itemfilterRPCRangeInfo": {
+      "type": "object",
+      "properties": {
+        "Meta": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterMeta",
+          "description": "黑名单的元信息"
+        },
+        "FilterType": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterType",
+          "description": "过滤器类型"
+        },
+        "Status": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterStatus",
+          "description": "过滤器当前状态"
+        },
+        "Setting": {
+          "$ref": "#/definitions/itemfilterRPCRedisFilterSetting",
+          "description": "过滤器设置"
+        }
+      },
+      "description": "范围信息",
+      "title": "RangeInfo",
+      "required": [
+        "Meta",
+        "FilterType",
+        "Status",
+        "Setting"
+      ]
+    },
+    "itemfilterRPCRangeInfoResponse": {
+      "type": "object",
+      "properties": {
+        "info": {
+          "$ref": "#/definitions/itemfilterRPCRangeInfo",
+          "description": "范围信息"
+        }
+      },
+      "description": "范围信息的响应",
+      "title": "RangeInfoResponse"
+    },
+    "itemfilterRPCRedisFilterMeta": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string",
+          "description": "对象ID,请求时不填则自动生成"
+        },
+        "EntitySourceType": {
+          "type": "string",
+          "description": "对象针对的实体类型"
+        },
+        "Name": {
+          "type": "string",
+          "description": "对象名,创建上下文或picker时不用填"
+        },
+        "Desc": {
+          "type": "string",
+          "description": "对象描述,创建上下文或picker时不用填"
+        },
+        "Key": {
+          "type": "string",
+          "description": "对象保存的key,请求创建时不填"
+        }
+      }
+    },
+    "itemfilterRPCRedisFilterSetting": {
+      "type": "object",
+      "properties": {
+        "setfilterSetting": {
+          "$ref": "#/definitions/itemfilterRPCSetFilterSetting",
+          "description": "setfilter的设置项"
+        },
+        "BloomfilterSetting": {
+          "$ref": "#/definitions/itemfilterRPCBloomFilterSetting",
+          "description": "bloomfilter的设置项"
+        },
+        "CuckoofilterSetting": {
+          "$ref": "#/definitions/itemfilterRPCCuckooFilterSetting",
+          "description": "cuckoofilter的设置项"
+        }
+      }
+    },
+    "itemfilterRPCRedisFilterStatus": {
+      "type": "object",
+      "properties": {
+        "Exists": {
+          "type": "boolean",
+          "description": "filter是否存在"
+        },
+        "Size": {
+          "type": "string",
+          "format": "int64",
+          "description": "当前容量"
+        },
+        "TTLSeconds": {
+          "type": "string",
+          "format": "int64",
+          "description": "当前剩余时间,单位s"
+        }
+      },
+      "description": "过滤器配置信息",
+      "title": "RedisFilterInfo",
+      "required": [
+        "Exists",
+        "Capacity",
+        "Size"
+      ]
+    },
+    "itemfilterRPCRedisFilterType": {
+      "type": "string",
+      "enum": [
+        "SET",
+        "BLOOM",
+        "CUCKOO"
+      ],
+      "default": "SET"
+    },
+    "itemfilterRPCSetFilterSetting": {
+      "type": "object",
+      "properties": {
+        "MaxTTLSeconds": {
+          "type": "string",
+          "format": "int64",
+          "description": "保存key的最大过期秒数"
+        }
+      }
+    },
+    "itemfilterRPCSetSourceUsedQuery": {
+      "type": "object",
+      "properties": {
+        "envInfo": {
+          "$ref": "#/definitions/itemfilterRPCSetUsedEnvInfo",
+          "description": "设置资源被使用过的环境信息"
+        },
+        "entitySources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "实体资源id"
+        }
+      },
+      "description": "设置资源被使用过的请求",
+      "title": "SetSourceUsedQuery",
+      "required": [
+        "entitySources"
+      ]
+    },
+    "itemfilterRPCSetUsedEnvInfo": {
+      "type": "object",
+      "properties": {
+        "entitySourceType": {
+          "type": "string",
+          "description": "实体资源类型"
+        },
+        "pickerId": {
+          "type": "string",
+          "description": "指定挑选者的id,如果指定挑选者则会在设置的所有Picker中添加"
+        },
+        "contextIds": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "format": "int64"
+          },
+          "description": "指定上下文id和对应的刷新过期时间,\u003c=0则会去调取默认设置,如果指定上下文则会在该上下文上添加"
+        }
+      },
+      "description": "设置资源被使用过的环境信息",
+      "title": "SetUsedInfo",
+      "required": [
+        "entitySourceType"
+      ]
+    },
+    "itemfilterRPCSurvivorResponse": {
+      "type": "object",
+      "properties": {
+        "entitySourceType": {
+          "type": "string",
+          "description": "实体资源类型"
+        },
+        "survivor": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "幸存的候选者"
+        }
+      },
+      "description": "只包含候选者经过过滤后留下的幸存者的响应",
+      "title": "SurvivorResponse"
+    },
+    "itemfilterRPCUnionMod": {
+      "type": "string",
+      "enum": [
+        "UnionByDayAndRange",
+        "UnionByRange",
+        "UnionByDay"
+      ],
+      "default": "UnionByDayAndRange"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

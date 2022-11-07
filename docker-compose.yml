@@ -1,0 +1,41 @@
+version: '2.4'
+services:
+  redisfilter:
+    image: hsz1273327/redis-allinone:redis7-1.2.1
+    command: ["/etc/redis-config/redis.conf"]
+    ports:
+      - 6379:6379
+  redismetastore:
+    image: hsz1273327/redis-allinone:redis7-1.2.1
+    command: ["/etc/redis-config/redis.conf"]
+  # etcd
+  etcdmetastore:
+    image: docker.io/bitnami/etcd:3.5.1
+    logging:
+      options:
+        max-file: 3
+        max-size: 10m
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCDCTL_API=3
+  serv1:
+    build:
+      context: .
+      dockerfile: dockerfile.cn
+    logging:
+      options:
+        max-file: 3
+        max-size: 10m
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redisfilter
+      - redismetastore
+      - etcdmetastore
+    environment:
+      ITEMFILTERRPC_LOG_LEVEL: "DEBUG"
+      ITEMFILTERRPC_USE_GATEWAY: "true"
+      ITEMFILTERRPC_FILTERREDIS_URL: "redis://redisfilter:6379/0"
+      ITEMFILTERRPC_METADATASTORE_TYPE:  "etcd" #"self"
+      ITEMFILTERRPC_METADATASTORE_URL: "etcdmetastore:2379"
+      ITEMFILTERRPC_RANGECONFIG_FILTERTYPE: "bloom"

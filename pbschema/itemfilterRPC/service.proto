@@ -1,0 +1,644 @@
+syntax = "proto3";
+package itemfilterRPC;
+import "pbschema/google/api/annotations.proto";
+import "pbschema/protoc-gen-openapiv2/options/annotations.proto";
+import "pbschema/itemfilterRPC/universal.proto";
+import "pbschema/itemfilterRPC/metadatamodel.proto";
+import "pbschema/itemfilterRPC/blacklistdatamodel.proto";
+import "pbschema/itemfilterRPC/rangedatamodel.proto";
+import "google/protobuf/empty.proto";
+// import "google/api/httpbody.proto";
+option go_package = "./itemfilterRPC_pb";
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+    info: {
+      title: "itemfilterRPC";
+      version: "0.0.0";
+      contact: {
+        name: "test";
+        url: "http://localhost:5000";
+        email: "hsz1273327@gmail.com";
+      };
+    };
+    schemes: HTTP;
+    consumes: "application/json";
+    consumes: "application/x-foo-mime";
+    produces: "application/json";
+    produces: "application/x-foo-mime";
+  };
+  
+
+service ITEMFILTERRPC{
+    //meta
+    //GetMeta 获取服务的配置信息
+    rpc GetMeta (google.protobuf.Empty) returns (MetaResponse){
+        option (google.api.http) = {
+            get: "/api/meta"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "获取本服务的元信息";
+            operation_id: "getMeta";
+            tags: "meta";
+        };
+    }
+    //blacklist
+    // GetBlacklistList 获取黑名单列表
+    rpc GetBlacklistList (google.protobuf.Empty) returns (ListResponse){
+        option (google.api.http) = {
+            get: "/api/blacklists"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "获取黑名单id列表";
+            operation_id: "getBlacklistList";
+            tags: "blacklist";
+        };
+    }
+    //NewBlacklist 创建一个新的blacklist
+    rpc NewBlacklist (NewFilterQuery) returns (IDResponse){
+        option (google.api.http) = {
+            post: "/api/blacklist"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "创建黑名单";
+            operation_id: "newBlacklistList";
+            tags: "blacklist";
+        };
+    }
+    //GetBlacklistInfo 获取黑名单信息
+    rpc GetBlacklistInfo (IDQuery) returns (BlacklistInfoResponse){
+        option (google.api.http) = {
+            get: "/api/blacklist/{id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "获取指定黑名单信息";
+            operation_id: "getBlacklist";
+            tags: "blacklist";
+        };
+    }
+    //DeleteBlacklist 删除blackList
+    rpc DeleteBlacklist (IDQuery) returns (IDResponse){
+        option (google.api.http) = {
+            delete: "/api/blacklist/{id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "删除指定黑名单信息";
+            operation_id: "deleteBlacklistList";
+            tags: "blacklist";
+        };
+    }
+    //UpdateBlacklistSource 更新BlackList内不可用资源范围
+    rpc UpdateBlacklistSource (UpdateBlacklistSourceQuery) returns (IDResponse){
+        option (google.api.http) = {
+            put: "/api/blacklist/{id}"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "更新指定黑名单内容";
+            description: "本接口更新为替换操作";
+            operation_id: "updateBlacklistList";
+            tags: "blacklist";
+        };
+    }
+    //CheckSourceInBlacklist 检查物品在不在黑名单中
+    rpc CheckSourceInBlacklist (CheckSourceQuery) returns (CandidateStatusResponse){
+        option (google.api.http) = {
+          post: "/api/check/blacklist/{id}"
+          body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "检查候选者是否在指定黑名单内";
+            operation_id: "checkBlacklistList";
+            tags: "blacklist"
+            tags: "check";
+        };
+    }
+    //FilterSourceInBlacklist 过滤掉在黑名单中的物品,保留不在的部分
+    rpc FilterSourceInBlacklist (FilterSourceQuery) returns (SurvivorResponse){
+        option (google.api.http) = {
+          post: "/api/filter/not_in_blacklist/{id}"
+          body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "候选者中过滤掉在指定黑名单内的元素";
+            operation_id: "filterBlacklistList";
+            tags: "blacklist";
+            tags: "filter";
+        };
+    }
+    //range
+    //GetRangeList 获取范围列表
+    rpc GetRangeList (google.protobuf.Empty) returns (ListResponse){
+        option (google.api.http) = {
+            get: "/api/ranges"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "获取范围id列表";
+            operation_id: "getRangeList";
+            tags: "range";
+        };
+    }
+    //NewRange 创建一个新的range,注意创建并不会向其中添加元素,添加元素请调用AddRangeSource接口
+    rpc NewRange (NewFilterQuery) returns (IDResponse){
+        option (google.api.http) = {
+            post: "/api/range"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "创建范围";
+            operation_id: "newRangeList";
+            tags: "range";
+        };
+    }
+    //GetRangeInfo 获取范围信息
+    rpc GetRangeInfo (IDQuery) returns (RangeInfoResponse){
+        option (google.api.http) = {
+            get: "/api/range/{id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "获取指定范围信息";
+            operation_id: "getRange";
+            tags: "range";
+        };
+    }
+    //DeleteRange 删除范围
+    rpc DeleteRange (IDQuery) returns (IDResponse){
+        option (google.api.http) = {
+            delete: "/api/range/{id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "删除指定范围";
+            operation_id: "deleteRange";
+            tags: "range";
+        };
+    }
+    // AddRangeSource 添加范围内元素
+    rpc AddRangeSource (AddRangeSourceQuery) returns (IDResponse){
+        option (google.api.http) = {
+            put: "/api/range/{id}"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "向指定范围添加元素";
+            operation_id: "addRange";
+            tags: "range";
+        };
+    }
+    // BatchAddRangeSource 添加范围内元素
+    rpc BatchAddRangeSource (stream AddRangeSourceQuery) returns (ListResponse){
+        option (google.api.http) = {
+            post: "/api/batchop/range"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "批量向指定范围添加元素";
+            description: "流中的第一个元素需要指定rangeid,添加的元素只会放入这个rangeid对应的key中.";
+            operation_id: "batchAddRange";
+            tags: "range";
+        };
+    }
+    //CheckSourceInRange 检查物品在不在range中
+    rpc CheckSourceInRange (CheckSourceQuery) returns (CandidateStatusResponse){
+        option (google.api.http) = {
+            post: "/api/check/range/{id}"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "检查候选者在不在指定范围内";
+            operation_id: "checkRange";
+            tags: "range";
+            tags: "check";
+        };
+    }
+    //FilterSourceNotInRange 过滤掉不在范围内的物品,保留在的部分
+    rpc FilterSourceNotInRange (FilterSourceQuery) returns (SurvivorResponse){
+        option (google.api.http) = {
+            post: "/api/filter/in_range/{id}"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "过滤掉不在指定范围内的候选元素";
+            operation_id: "filterRange";
+            tags: "range";
+            tags: "filter";
+        };
+    }
+
+    //Context
+    //GetContextStatus  获取上下文过滤器状态信息
+    rpc GetContextStatus (IDEntitySourceTypeQuery) returns (GetContextStatusResponse){
+        option (google.api.http) = {
+            get: "/api/context/{id}/entity_source_type/{entity_source_type}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "获取上下文过滤器状态";
+            operation_id: "getContextStatus";
+            tags: "context";
+        };
+    }
+    //NewContexts 批量创建场景
+    rpc NewContexts (NewFilterQuery) returns (IDResponse){
+        option (google.api.http) = {
+            post: "/api/context"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "创建上下文过滤器";
+            operation_id: "newContext";
+            tags: "context";
+        };
+    }
+    
+    //Picker
+    //GetPickerStatus  获取上下文过滤器状态信息
+    rpc GetPickerStatus (IDEntitySourceTypeQuery) returns (GetPickerStatusResponse){
+        option (google.api.http) = {
+            get: "/api/picker/{id}/entity_source_type/{entity_source_type}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "获取挑选者过滤器组状态";
+            operation_id: "getPickerStatus";
+            tags: "picker";
+        };
+    }
+    //NewPickers 批量创建Picker
+    rpc NewPickers (NewPickerFilterQuery) returns (IDResponse){
+        option (google.api.http) = {
+            post: "/api/picker"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "创建挑选者过滤器组";
+            operation_id: "newPicker";
+            tags: "picker";
+        };
+    }
+    //操作
+    //SetEntitySourceUsed  设置资源在指定条件中已被使用
+    rpc SetEntitySourceUsed (SetSourceUsedQuery) returns (google.protobuf.Empty){
+        option (google.api.http) = {
+            post: "/api/setter"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "设置资源在指定条件中已被使用";
+            operation_id: "setEntitySourceUsed";
+            tags: "operation";
+            tags: "set";
+        };
+    }
+    //BatchSetEntitySourceUsed  设置资源在指定条件中已被使用
+    rpc BatchSetEntitySourceUsed (stream SetSourceUsedQuery) returns (google.protobuf.Empty){
+        option (google.api.http) = {
+            post: "/api/batchop/setter"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "批量设置资源在指定条件中已被使用";
+            operation_id: "batchSetEntitySourceUsed";
+            tags: "operation";
+            tags: "set";
+        };
+    }
+    //CheckEntitySource 检查实体资源是否可用
+    rpc CheckEntitySource (CheckQuery) returns (CandidateStatusResponse){
+        option (google.api.http) = {
+            post: "/api/check"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "检查实体资源是否可用";
+            operation_id: "checkEntitySource";
+            tags: "operation";
+            tags: "check";
+        };
+    }
+    //FilterEntitySource 过滤掉不符合的,保留可用的
+    rpc FilterEntitySource (FilterQuery) returns (SurvivorResponse){
+        option (google.api.http) = {
+            post: "/api/filter"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "过滤掉不符合条件的候选实体资源";
+            operation_id: "filterEntitySource";
+            tags: "operation";
+            tags: "filter";
+        };
+    }
+
+    //PickerCounter
+    // GetPickerCounterNumber 获取指定条件下PickerCounter的计数值
+    // 需要启动相关功能
+    rpc GetPickerCounterNumber (GetPickerCounterNumberQuery) returns (GetPickerCounterNumberResponse){
+        option (google.api.http) = {
+            get: "/api/pickercounter"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "获取指定条件下PickerCounter的计数值";
+            description: "需要启动相关功能"
+            operation_id: "getPickerCounterNumber";
+            tags: "pickercounter";
+        };
+    }
+}
+// 通用请求
+message IDQuery {
+  string id = 1;
+}
+
+message IDEntitySourceTypeQuery{
+    string id = 1;
+    string entity_source_type = 2;
+}
+message CheckSourceQuery {
+    string id = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "请求的范围或黑名单名"
+    }];
+    repeated string candidates = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "待检查的候选项"
+    }];
+}
+message FilterSourceQuery {
+    string id = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "请求的范围或黑名单名"
+    }];;
+    int32 need = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "需要挑出符合要求的候选者的个数,如果为0则表示找出全部,否则按候选者的顺序查找"
+    }];;
+    int32 chunk_size = 3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "单批查找个数"
+    }];
+    repeated string candidates = 4[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "待检查的候选项"
+    }];
+}
+message NewFilterQuery{
+    RedisFilterMeta meta = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "指定过滤器的元信息"
+    }];
+    RedisFilterSetting setting = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "指定过滤器的设置"
+    }];
+    repeated string entity_sources = 3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "指定向过滤器中设置的实体ID,注意作为创建blacklist的参数时以及其他以set作为filter的过滤器时都必填"
+    }];
+}
+
+
+// 通用响应
+message IDResponse{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+        title: "StatusResponse"
+        description: "只含ID信息的响应"
+        required: ["ID"]
+        }
+    };
+    string ID = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "id号"
+    }];
+}
+message ListResponse {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "ListResponse"
+            description: "列表的响应"
+        }
+    };
+    repeated string content =1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "id列表"
+    }];
+}
+message CandidateStatusResponse {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+        title: "CandidateStatusResponse"
+        description: "只包含候选者状态信息的响应"
+        }
+    };
+
+    string entity_source_type = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "实体资源类型"
+    }];
+    map<string,bool> candidate_status = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "过滤器中是否存在候选者的信息,true表示在,false表示不在"
+    }];
+}
+message SurvivorResponse {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+        title: "SurvivorResponse"
+        description: "只包含候选者经过过滤后留下的幸存者的响应"
+        }
+    };
+    string entity_source_type = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "实体资源类型"
+    }];
+    repeated string survivor = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "幸存的候选者"
+    }];
+}
+
+// meta
+message MetaResponse{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+        title: "MetaResponse"
+        description: "服务meta信息的响应"
+        }
+    };
+    itemfilterRPC.MetaInfo content =1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "元信息"
+    }];
+}
+
+//blacklist
+message BlacklistInfoResponse{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "BlackListInfoResponse"
+            description: "黑名单信息的响应"
+        }
+    };
+    BlacklistInfo info =1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "黑名单信息"
+    }];
+}
+message UpdateBlacklistSourceQuery {
+    string id = 1;
+    repeated string content = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "黑名单的新内容,替换原本的内容"
+    }];
+}
+
+// range
+message RangeInfoResponse {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "RangeInfoResponse"
+            description: "范围信息的响应"
+        }
+    };
+    RangeInfo info =1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "范围信息"
+    }];
+}
+message AddRangeSourceQuery {
+  string id = 1;
+  repeated string content = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "范围的新内容,如果内容很多建议使用批处理接口"
+  }];
+}
+
+//Picker
+message NewPickerFilterQuery{
+    RedisFilterMeta meta = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "指定过滤器的元信息"
+    }];
+    map<string,RedisFilterSetting> settings = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "指定过滤器的设置,key为对应的时长,如果未指定则使用默认"
+    }];
+    repeated string entity_sources = 3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "指定向过滤器中设置的实体ID"
+    }];
+}
+// 操作
+message GetContextStatusResponse {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "GetContextStatusResponse"
+            description: "获取上下文状态信息的响应"
+        }
+    };
+    RedisFilterStatus filter_status = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "上下文过滤器状态"
+    }];
+}
+message GetPickerStatusResponse {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "GetPickerStatusResponse"
+            description: "获取用户状态信息的响应"
+        }
+    };
+    map<string,RedisFilterStatus> filter_status = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "支持的时间段对应过滤器状态"
+    }];
+}
+message SetUsedEnvInfo {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "SetUsedInfo"
+            description: "设置资源被使用过的环境信息"
+            required: ["entity_source_type"]
+        }
+    };
+    string entity_source_type = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "实体资源类型"
+    }];
+    string picker_id = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "指定挑选者的id,如果指定挑选者则会在设置的所有Picker中添加"
+    }];
+    map<string,int64> context_ids = 3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "指定上下文id和对应的刷新过期时间,<=0则会去调取默认设置,如果指定上下文则会在该上下文上添加"
+    }];
+}
+
+message SetSourceUsedQuery {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "SetSourceUsedQuery"
+            description: "设置资源被使用过的请求"
+            required: ["entity_sources"]
+        }
+    };
+    SetUsedEnvInfo env_info = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "设置资源被使用过的环境信息"
+    }];
+    repeated string entity_sources = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "实体资源id"
+    }];
+}
+
+message Condition {
+    
+    string picker_id = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "挑选者id"
+    }];
+    string entity_source_type = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "检查的实体类型"
+    }];
+    string range_id = 3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "范围id"
+    }];
+    repeated string context_ids = 4[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "上下文id"
+    }];
+    repeated string blacklist_ids = 5[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "黑名单id列表"
+    }];
+}
+
+message CheckQuery {
+    Condition conditions = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "待检查的条件"
+    }];
+    repeated string candidates = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "待检查的候选项"
+    }];
+}
+message FilterQuery {
+    Condition conditions = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "待过滤的条件"
+    }];
+    int32 need = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "需要挑出符合要求的候选者的个数,如果为0则表示找出全部,否则按候选者的顺序查找"
+    }];
+    int32 chunk_size = 3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "单批查找个数"
+    }];
+    repeated string candidates = 4[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "待过滤的候选项"
+    }];
+}
+
+enum UnionMod {
+    UnionByDayAndRange = 0; //计算指定范围和时间内的聚合总体结果,结果的key为union,如果没有指定ranges则结果key为global
+    UnionByRange = 1; //计算ranges中指定range们的并集,结果的key为每天日期,
+    UnionByDay = 2; //计算每天各个range的并集,结果的key为rangeid,如果没有指定ranges则结果key为global
+}
+
+// PickerCounter
+message GetPickerCounterNumberQuery{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "GetPickerCounterNumberQuery"
+            description: "获取挑选者数量的请求"
+            required: ["scenes"]
+        }
+    };
+    int32 days = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "指定向后查看的天数,0或空表示查看当天"
+    }];
+    int32 offset =2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "指定向后偏移的天数,0或空表示无偏移"
+    }];
+    UnionMod mod  = 3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "求集合的模式"
+    }];
+    repeated string ranges = 4[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "指定若干个range,不指定则获取总体"
+    }];
+}
+
+message GetPickerCounterNumberResponse{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "GetPickerCounterNumberResponse"
+            description: "获取挑选者数量的响应"
+        }
+    };
+    map<string,int64> result = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "结果"
+    }];
+}

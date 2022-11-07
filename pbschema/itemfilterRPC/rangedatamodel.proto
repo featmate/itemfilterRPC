@@ -1,0 +1,29 @@
+syntax = "proto3";
+package itemfilterRPC;
+import "pbschema/protoc-gen-openapiv2/options/annotations.proto";
+import "pbschema/itemfilterRPC/universal.proto";
+// import "google/api/httpbody.proto";
+option go_package = "./itemfilterRPC_pb";
+
+
+message RangeInfo{
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "RangeInfo"
+            description: "范围信息"
+            required: ["Meta","FilterType","Status","Setting"]
+        }
+    };
+    RedisFilterMeta Meta = 1[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "黑名单的元信息"
+    }];
+    RedisFilterType FilterType = 2[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "过滤器类型"
+    }];
+    RedisFilterStatus Status = 3[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "过滤器当前状态"
+    }];
+    RedisFilterSetting Setting = 4[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "过滤器设置"
+    }];
+}
