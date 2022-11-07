@@ -73,3 +73,8 @@
 
 > 统计流量: (配置如果设置)如果配置中启动该特性,则本工具还可以顺便各个范围下以及总体下的去重挑选者数
 
+## 使用
+
+推荐使用docker镜像`hsz1273327/itemfilter`.它可以使用环境变量,命令行,也可以使用json配置文件配置.配置项可以参考`itemfilterRPC_serv/serv.go`
+
+本项目需要至少依赖一个redis,如果使用[Basic-Components/redis-allinone](https://github.com/Basic-Components/redis-allinone)项目构造的镜像或者自己给redis装了RedisBloom插件,那么就可以使用bloom过滤器和cuckoo过滤器.默认会将范围和黑名单的元信息放在redis中,如果有监听这些元信息变化的需求可以改为放在etcd中.
